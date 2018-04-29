@@ -1,0 +1,82 @@
+import UIKit
+
+class ViewController: UIViewController {
+    
+    var format : NSDateFormatter!
+    var labelClock : UILabel!
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        //Light pink color with RGB values
+        view.backgroundColor = UIColor(red: 255.0/255.0, green: 200.0/255.0, blue: 210.0/255.0, alpha: 1.0)
+        
+        let label = UILabel(frame: CGRectMake(0,0,200,100))
+        label.center = CGPoint(x: view.center.x, y: 150)
+        label.text = "Now is"
+        label.textAlignment = NSTextAlignment.Center //Align to center
+        view.addSubview(label)
+        
+        labelClock = UILabel(frame: CGRectMake(0,0,250,100))
+        labelClock.center = view.center
+        labelClock.textAlignment = NSTextAlignment.Center
+        labelClock.numberOfLines = 0 //Multi-lines
+        labelClock.font = UIFont(name: "Helvetica-Bold", size: 20)
+        view.addSubview(labelClock)
+        
+        format = NSDateFormatter()
+        
+        //Print different date styles.
+        printDateStyles()
+        
+        //Custom Format for clock
+        format.dateFormat = "yyyy/MM/dd\nEEEE\nhh:mm:ss a\nzzzz"
+        
+        //Update the date and time of the clock periodically.
+        NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "updateClock", userInfo: nil, repeats: true)
+        
+    }
+    
+    //Print different styles once in debugger console
+    func printDateStyles() {
+        
+        let formatArray : [NSDateFormatterStyle] = [NSDateFormatterStyle.ShortStyle, NSDateFormatterStyle.MediumStyle, NSDateFormatterStyle.LongStyle, NSDateFormatterStyle.FullStyle]
+        let formatStringArray : [String] = ["No","Short","Medium","Long","Full"]
+        
+        let now = NSDate()
+        var outputString : String!
+        
+        //Show Date Styles
+        print("---Date Styles---")
+        for style in formatArray {
+            format.dateStyle = style
+            outputString = "\(formatStringArray[style.hashValue]) Style:\t\(format.stringFromDate(now))"
+            
+            print(outputString)
+        }
+        
+        //Remove Date String
+        format.dateStyle = NSDateFormatterStyle.NoStyle
+        
+        //Show Time Styles
+        print("\n---Time Styles---")
+        for style in formatArray {
+            format.timeStyle = style
+            outputString = "\(formatStringArray[style.hashValue]) Style:\t\(format.stringFromDate(now))"
+            
+            print(outputString)
+        }
+    }
+    
+    //Update clock every second
+    func updateClock() {
+        let now = NSDate()
+        
+        labelClock.text = format.stringFromDate(now)
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+    }
+
+}
